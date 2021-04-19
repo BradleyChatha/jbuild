@@ -1,0 +1,54 @@
+build_types "release" "debug" default="debug"
+
+data {
+    define:string "sourceDir" value="src/"      const=true
+    define:string "buildDir"  value="build/"    const=true
+    define:string "headerDir" value="include/"  const=true
+    define:string "mainFile"  value="${sourceDir}libmain.c" const=true
+
+    define:string "objName" value="adventlib.o"   const=true
+    define:string "exeName" value="adventlib.lib" const=true
+    define:string "cc"      value="clang"         const=true
+    define:string "linker"  value="llvm-ar"       const=true
+    define:string "ccflags" value="-Wall"
+    define:string "linkerFlags" value="rc"
+
+    if:equal "$build_type" "release" {
+        append " -O3" into="ccflags"
+    }
+    make:const "ccflags"
+    
+    define:string_array "sourceFiles"
+    append:glob into="sourceFiles" dir="$sourceDir" pattern="*.c"
+    make:const "sourceFiles"
+
+    define:string_array "headerFiles"
+    append:glob into="headerFiles" dir="$headerDir" pattern="*.h"
+    make:const "headerFiles"
+}
+
+stage "build_and_link" {
+    input:file_array "$sourceFiles" "$headerFiles"
+    make:directory "$buildDir"
+    
+    define:string "objPath"
+    append:path "$buildDir" "$objName" into="objPath"
+
+    define:string "exePath"
+    append:path "$buildDir" "$exeName" into="exePath"
+    
+    //shell:execute "${cc} ${ccflags} -I ${headerDir:escape_shell} -o ${objPath:escape_shell} -c ${mainFile}"
+    //shell:execute "${linker} ${linkerFlags} ${exePath:escape_shell} ${objPath:escape_shell}"
+
+    output "exePath"
+}
+
+command "build" {
+    stages "build_and_link"
+
+    output "${build_and_link@output:absolute_path}" as="lib"
+}
+
+export {
+    commands "build"
+}

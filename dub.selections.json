@@ -1,0 +1,10 @@
+{
+	"fileVersion": 1,
+	"versions": {
+		"jcli": "0.12.0",
+		"jioc": "0.2.0",
+		"sdlite": "1.1.1",
+		"silly": "1.0.2",
+		"taggedalgebraic": "0.11.20"
+	}
+}

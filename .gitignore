@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/jbuild
+jbuild.so
+jbuild.dylib
+jbuild.dll
+jbuild.a
+jbuild.lib
+jbuild-test-*
+*.exe
+*.o
+*.obj
+*.lst
